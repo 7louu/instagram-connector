@@ -8,6 +8,7 @@ class ConnectorConfig(BaseSettings):
     db_uri: str = Field(validation_alias="MONGO_URI")
     db_name: str = Field(validation_alias="MONGO_DB_NAME")
     graph_api_version: str = Field(validation_alias="GRAPH_API_VERSION")
+    instagram_api_base_url: str = Field(default="https://graph.facebook.com", validation_alias="IG_API_BASE_URL")
 
     model_config = SettingsConfigDict(extra="ignore", env_file=".env", env_file_encoding="utf-8", populate_by_name=True)
 
