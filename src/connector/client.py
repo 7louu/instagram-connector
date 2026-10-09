@@ -21,13 +21,13 @@ class InstagramClient:
 
     def fetch_posts(self) -> list[dict[str, Any]]:
         return self._fetch_all(
-            f"{self.base_url}/{self.config.instagram_user_id}/media",
+            f"{self.base_url}/{self.config.instagram_business_account_id}/media",
             {
                 "fields": (
                     "id,caption,media_type,media_url,thumbnail_url,timestamp,"
                     "permalink,comments_count,children{ id,media_type,media_url,thumbnail_url }"
                 ),
-                "limit": 100,
+                "limit": 10,
             },
         )
 
@@ -38,7 +38,7 @@ class InstagramClient:
         matches = self._fetch_all(
             f"{self.base_url}/ig_hashtag_search",
             {
-                "user_id": self.config.instagram_user_id,
+                "user_id": self.config.instagram_business_account_id,
                 "q": query,
                 "fields": "id,name",
                 "limit": 1,
@@ -54,19 +54,19 @@ class InstagramClient:
         return self._fetch_all(
             f"{self.base_url}/{hashtag_id}/{order}_media",
             {
-                "user_id": self.config.instagram_user_id,
+                "user_id": self.config.instagram_business_account_id,
                 "fields": (
                     "id,caption,media_type,media_url,thumbnail_url,timestamp,"
                     "permalink,comments_count,children{id,media_type,media_url,thumbnail_url}"
                 ),
-                "limit": 50,
+                "limit": 10,
             },
         )
 
     def fetch_comments(self, media_id: str) -> list[dict[str, Any]]:
         return self._fetch_all(
             f"{self.base_url}/{media_id}/comments",
-            {"fields": "id,text,timestamp,username,like_count", "limit": 100},
+            {"fields": "id,text,timestamp,username,like_count", "limit": 25},
         )
 
     def download_media(self, media_url: str) -> bytes:

@@ -3,7 +3,7 @@ from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class ConnectorConfig(BaseSettings):
-    instagram_user_id: str = Field(validation_alias="IG_USER_ID")
+    instagram_business_account_id: str = Field(validation_alias="IG_BUSINESS_ACCOUNT_ID")
     instagram_access_token: str = Field(validation_alias="IG_ACCESS_TOKEN")
     db_uri: str = Field(validation_alias="MONGO_URI")
     db_name: str = Field(validation_alias="MONGO_DB_NAME")
