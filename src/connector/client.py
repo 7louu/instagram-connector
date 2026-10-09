@@ -56,8 +56,8 @@ class InstagramClient:
             {
                 "user_id": self.config.instagram_business_account_id,
                 "fields": (
-                    "id,caption,media_type,media_url,thumbnail_url,timestamp,"
-                    "permalink,comments_count,children{id,media_type,media_url,thumbnail_url}"
+                    "id,caption,media_type,media_url,timestamp,permalink,comments_count,"
+                    "children{id,media_type,media_url}"
                 ),
                 "limit": 10,
             },
