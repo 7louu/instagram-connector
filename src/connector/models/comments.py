@@ -1,9 +1,9 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from pydantic import BaseModel, Field
 from typing import Any
 
 def get_current_time() -> datetime:
-    return datetime.now(timezone=datetime.timezone.utc)
+    return datetime.now(timezone.utc)
 
 class Comment(BaseModel):
     id: str
@@ -19,8 +19,8 @@ class Comment(BaseModel):
         return cls(
             id=raw["id"],
             media_id=media_id,
-            text=raw.get("text"),
-            posted_at=datetime.fromisoformat(raw["timestamp"]) if "timestamp" in raw else None,
+            text=raw.get("text", ""),
+            posted_at=datetime.fromisoformat(raw["timestamp"].replace("Z", "+00:00")) if raw.get("timestamp") else None,
             username=raw.get("username"),
             like_count=raw.get("like_count"),
         )

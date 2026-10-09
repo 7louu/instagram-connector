@@ -1,15 +1,17 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from pydantic import BaseModel, Field
 from typing import Any
 from bson import ObjectId
 
 def get_current_time() -> datetime:
-    return datetime.now(timezone=datetime.timezone.utc)
+    return datetime.now(timezone.utc)
 
 class ImageRef(BaseModel):
     gridfs_id: ObjectId
     sha256: str
     size: int
+
+    model_config = {"arbitrary_types_allowed": True}
 
 class Post(BaseModel):
     id: str
@@ -29,9 +31,9 @@ class Post(BaseModel):
             caption=raw.get("caption"),
             media_type=raw["media_type"],
             media_url=raw.get("media_url"),
-            posted_at=datetime.fromisoformat(raw["timestamp"]),
+            posted_at=datetime.fromisoformat(raw["timestamp"].replace("Z", "+00:00")),
             comments_count=raw.get("comments_count"),
-            hashtags=[tag.lstrip("#") for tag in raw.get("caption", "").split() if tag.startswith("#")],
+            hashtags=[tag[1:].rstrip(".,!?;:") for tag in (raw.get("caption") or "").split() if tag.startswith("#")],
         )
 
     def to_document(self) -> dict[str, Any]:
