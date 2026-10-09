@@ -31,6 +31,38 @@ class InstagramClient:
             },
         )
 
+    def search_hashtag(self, hashtag: str) -> str | None:
+        query = hashtag.strip().lstrip("#").strip()
+        if not query:
+            raise InstagramAPIError("Hashtag cannot be empty")
+        matches = self._fetch_all(
+            f"{self.base_url}/ig_hashtag_search",
+            {
+                "user_id": self.config.instagram_user_id,
+                "q": query,
+                "fields": "id,name",
+                "limit": 1,
+            },
+        )
+        return matches[0]["id"] if matches else None
+
+    def fetch_hashtag_media(
+        self, hashtag_id: str, order: str = "recent"
+    ) -> list[dict[str, Any]]:
+        if order not in {"recent", "top"}:
+            raise ValueError("order must be 'recent' or 'top'")
+        return self._fetch_all(
+            f"{self.base_url}/{hashtag_id}/{order}_media",
+            {
+                "user_id": self.config.instagram_user_id,
+                "fields": (
+                    "id,caption,media_type,media_url,thumbnail_url,timestamp,"
+                    "permalink,comments_count,children{id,media_type,media_url,thumbnail_url}"
+                ),
+                "limit": 50,
+            },
+        )
+
     def fetch_comments(self, media_id: str) -> list[dict[str, Any]]:
         return self._fetch_all(
             f"{self.base_url}/{media_id}/comments",
@@ -42,6 +74,9 @@ class InstagramClient:
             raise InstagramAPIError("Instagram media URL must use HTTPS")
         response = self._request(media_url)
         return response.content
+
+    def close(self) -> None:
+        self.session.close()
 
     def _fetch_all(self, url: str, params: dict[str, Any]) -> list[dict[str, Any]]:
         results: list[dict[str, Any]] = []
