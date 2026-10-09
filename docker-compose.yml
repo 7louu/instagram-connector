@@ -1,0 +1,21 @@
+services:
+  mongo:
+    image: mongo:latest
+    container_name: ig-connector-db
+    restart: unless-stopped
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  mongo_data:
