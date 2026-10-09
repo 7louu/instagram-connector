@@ -13,5 +13,8 @@ dependencies = [
     "pydantic-settings"
 ]
 
+[project.scripts]
+instagram-connector = "connector.cli:main"
+
 [tool.setuptools.packages.find]
 where = ["src"]
